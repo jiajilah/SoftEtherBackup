@@ -1,3 +1,10 @@
+softether (4.06.9437-3~trusty) trusty; urgency=low
+
+  * Promote debhelper compatibility level to 9.
+  * Create a ufw firewall template for SoftEther.
+
+ -- Darik Horn <dajhorn@vanadac.com>  Wed, 23 Apr 2014 18:45:21 -0400
+
 softether (4.06.9437-2~trusty) trusty; urgency=low
 
   * Revert "Add non-forking daemon mode for upstart."
