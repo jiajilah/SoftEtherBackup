@@ -1,0 +1,21 @@
+softether (4.06.9437-2~trusty) trusty; urgency=low
+
+  * Revert "Add non-forking daemon mode for upstart."
+  * Create a non-forking softetherd for upstart and systemd.
+  * Update init files for softetherd.
+  * Create /lib/systemd/system/softether.service file.
+
+ -- Darik Horn <dajhorn@vanadac.com>  Tue, 22 Apr 2014 23:33:51 -0400
+
+softether (4.06.9437-1~trusty) trusty; urgency=low
+
+  * Add non-forking daemon mode for upstart.
+  * Create /etc/init/softether.conf for upstart.
+
+ -- Darik Horn <dajhorn@vanadac.com>  Mon, 21 Apr 2014 21:48:35 -0400
+
+softether (4.06.9437-0~trusty) trusty; urgency=low
+
+  * Redebianize for autotools and dpkg-buildpackage.
+
+ -- Darik Horn <dajhorn@vanadac.com>  Tue, 15 Apr 2014 16:30:01 -0400
