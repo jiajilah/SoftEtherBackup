@@ -1,3 +1,9 @@
+softether (4.06.9437-4~trusty) trusty; urgency=low
+
+  * Create an apparmor security profile for softetherd.
+
+ -- Darik Horn <dajhorn@vanadac.com>  Thu, 01 May 2014 19:12:41 -0400
+
 softether (4.06.9437-3~trusty) trusty; urgency=low
 
   * Promote debhelper compatibility level to 9.
