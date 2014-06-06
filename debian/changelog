@@ -1,3 +1,21 @@
+softether (4.06.9448-1~trusty) trusty; urgency=low
+
+  [ dnobori ]
+  * v4.07-9448-rtm
+
+  [ Darik Horn ]
+  * Add dh-apparmor as an explicit build dependency.
+  * Add an explicit autoconf check for librt.
+  * Lintian: Depend on debhelper version 9.
+  * Lintian: Remove build-essential dependency.
+  * Lintian: Set the single-debian-patch source option.
+  * Lintian: Create debian/copyright file.
+  * Lintian: Promote standards version to 3.9.5.
+  * Lintian: Override soname warnings.
+  * Lintian: Override possible-gpl-code-linked-with-openssl.
+
+ -- Darik Horn <dajhorn@vanadac.com>  Thu, 05 Jun 2014 23:06:29 -0400
+
 softether (4.06.9437-4~trusty) trusty; urgency=low
 
   * Create an apparmor security profile for softetherd.
