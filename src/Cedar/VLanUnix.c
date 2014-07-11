@@ -457,6 +457,9 @@ int UnixCreateTapDeviceEx(char *name, char *prefix, UCHAR *mac_address)
 		// Linux
 		if (IsFile(TAP_FILENAME_1) == false)
 		{
+#ifdef _BSD_SOURCE
+			mknod(TAP_FILENAME_1, S_IFCHR | S_IRWXU, makedev(10,200));
+#else
 			char tmp[MAX_SIZE];
 
 			Format(tmp, sizeof(tmp), "%s c 10 200", TAP_FILENAME_1);
@@ -464,6 +467,7 @@ int UnixCreateTapDeviceEx(char *name, char *prefix, UCHAR *mac_address)
 
 			Format(tmp, sizeof(tmp), "600 %s", TAP_FILENAME_1);
 			Run("chmod", tmp, true, true);
+#endif
 		}
 	}
 	// Other than MacOS X
