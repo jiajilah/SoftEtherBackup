@@ -1,3 +1,9 @@
+softether (4.08.9449-3~trusty) trusty; urgency=low
+
+  * Change GetExeDir to GetStateDir in Cedar and Mayaqua.
+
+ -- Darik Horn <dajhorn@vanadac.com>  Fri, 11 Jul 2014 16:26:08 -0400
+
 softether (4.08.9449-2~trusty) trusty; urgency=low
 
   * Create a release branch for Ubuntu 14.04 Trusty Tahr.
