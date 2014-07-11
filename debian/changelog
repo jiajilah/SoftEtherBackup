@@ -1,0 +1,5 @@
+softether (4.08.9449-2~precise) precise; urgency=low
+
+  * Create a release branch for Ubuntu 12.04 Precise Pangolin.
+
+ -- Darik Horn <dajhorn@vanadac.com>  Fri, 11 Jul 2014 15:02:15 -0400
