@@ -1,3 +1,9 @@
+softether (4.08.9449-4~trusty) trusty; urgency=low
+
+  * Add TUN devices to the apparmor profile.
+
+ -- Darik Horn <dajhorn@vanadac.com>  Fri, 11 Jul 2014 20:42:38 -0400
+
 softether (4.08.9449-3~trusty) trusty; urgency=low
 
   * Change GetExeDir to GetStateDir in Cedar and Mayaqua.
