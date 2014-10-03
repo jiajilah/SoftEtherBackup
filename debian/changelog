@@ -1,3 +1,16 @@
+softether (4.10.9505-1~utopic) utopic; urgency=low
+
+  [ dnobori ]
+  * v4.09-9451-beta
+  * v4.10-9472-beta
+  * v4.10-9473-beta
+  * v4.10-9505-beta
+
+  [ Darik Horn ]
+  * Update gbp.conf for Ubuntu 14.10 Utopic Unicorn.
+
+ -- Darik Horn <dajhorn@vanadac.com>  Fri, 03 Oct 2014 13:12:19 -0400
+
 softether (4.08.9449-4~trusty) trusty; urgency=low
 
   * Add TUN devices to the apparmor profile.
