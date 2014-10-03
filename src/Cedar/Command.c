@@ -54,10 +54,25 @@
 // AND FORUM NON CONVENIENS. PROCESS MAY BE SERVED ON EITHER PARTY IN
 // THE MANNER AUTHORIZED BY APPLICABLE LAW OR COURT RULE.
 // 
-// USE ONLY IN JAPAN. DO NOT USE IT IN OTHER COUNTRIES. IMPORTING THIS
-// SOFTWARE INTO OTHER COUNTRIES IS AT YOUR OWN RISK. SOME COUNTRIES
-// PROHIBIT ENCRYPTED COMMUNICATIONS. USING THIS SOFTWARE IN OTHER
-// COUNTRIES MIGHT BE RESTRICTED.
+// USE ONLY IN JAPAN. DO NOT USE THIS SOFTWARE IN ANOTHER COUNTRY UNLESS
+// YOU HAVE A CONFIRMATION THAT THIS SOFTWARE DOES NOT VIOLATE ANY
+// CRIMINAL LAWS OR CIVIL RIGHTS IN THAT PARTICULAR COUNTRY. USING THIS
+// SOFTWARE IN OTHER COUNTRIES IS COMPLETELY AT YOUR OWN RISK. THE
+// SOFTETHER VPN PROJECT HAS DEVELOPED AND DISTRIBUTED THIS SOFTWARE TO
+// COMPLY ONLY WITH THE JAPANESE LAWS AND EXISTING CIVIL RIGHTS INCLUDING
+// PATENTS WHICH ARE SUBJECTS APPLY IN JAPAN. OTHER COUNTRIES' LAWS OR
+// CIVIL RIGHTS ARE NONE OF OUR CONCERNS NOR RESPONSIBILITIES. WE HAVE
+// NEVER INVESTIGATED ANY CRIMINAL REGULATIONS, CIVIL LAWS OR
+// INTELLECTUAL PROPERTY RIGHTS INCLUDING PATENTS IN ANY OF OTHER 200+
+// COUNTRIES AND TERRITORIES. BY NATURE, THERE ARE 200+ REGIONS IN THE
+// WORLD, WITH DIFFERENT LAWS. IT IS IMPOSSIBLE TO VERIFY EVERY
+// COUNTRIES' LAWS, REGULATIONS AND CIVIL RIGHTS TO MAKE THE SOFTWARE
+// COMPLY WITH ALL COUNTRIES' LAWS BY THE PROJECT. EVEN IF YOU WILL BE
+// SUED BY A PRIVATE ENTITY OR BE DAMAGED BY A PUBLIC SERVANT IN YOUR
+// COUNTRY, THE DEVELOPERS OF THIS SOFTWARE WILL NEVER BE LIABLE TO
+// RECOVER OR COMPENSATE SUCH DAMAGES, CRIMINAL OR CIVIL
+// RESPONSIBILITIES. NOTE THAT THIS LINE IS NOT LICENSE RESTRICTION BUT
+// JUST A STATEMENT FOR WARNING AND DISCLAIMER.
 // 
 // 
 // SOURCE CODE CONTRIBUTION
@@ -9045,6 +9060,7 @@ UINT PsConfigGet(CONSOLE *c, char *cmd_name, wchar_t *str, void *param)
 			wchar_t tmp[MAX_SIZE];
 			UINT buf_size;
 			wchar_t *buf;
+			UNI_TOKEN_LIST *lines;
 
 			UniFormat(tmp, sizeof(tmp), _UU("CMD_ConfigGet_FILENAME"), t.FileName,
 				StrLen(t.FileData));
@@ -9056,7 +9072,19 @@ UINT PsConfigGet(CONSOLE *c, char *cmd_name, wchar_t *str, void *param)
 
 			Utf8ToUni(buf, buf_size, (BYTE *)t.FileData, StrLen(t.FileData));
 
-			c->Write(c, buf);
+			lines = UniGetLines(buf);
+			if (lines != NULL)
+			{
+				UINT i;
+
+				for (i = 0;i < lines->NumTokens;i++)
+				{
+					c->Write(c, lines->Token[i]);
+				}
+
+				UniFreeToken(lines);
+			}
+
 			c->Write(c, L"");
 
 			Free(buf);
@@ -22226,18 +22254,18 @@ void CtPrintCsv(CT *ct, CONSOLE *c)
 {
 	UINT i, j;
 	UINT num_columns = LIST_NUM(ct->Columns);
-	wchar_t buf[MAX_SIZE];
-	wchar_t fmtbuf[MAX_SIZE];
+	wchar_t buf[MAX_SIZE*4];
+	wchar_t fmtbuf[MAX_SIZE*4];
 
 	// Show the heading row
 	buf[0] = 0;
 	for(i=0; i<num_columns; i++)
 	{
 		CTC *ctc = LIST_DATA(ct->Columns, i);
-		CtEscapeCsv(fmtbuf, MAX_SIZE, ctc->String);
-		UniStrCat(buf, MAX_SIZE, fmtbuf);
+		CtEscapeCsv(fmtbuf, sizeof(fmtbuf), ctc->String);
+		UniStrCat(buf, sizeof(buf), fmtbuf);
 		if(i != num_columns-1)
-			UniStrCat(buf, MAX_SIZE, L",");
+			UniStrCat(buf, sizeof(buf), L",");
 	}
 	c->Write(c, buf);
 
@@ -22248,10 +22276,10 @@ void CtPrintCsv(CT *ct, CONSOLE *c)
 		buf[0] = 0;
 		for(i=0; i<num_columns; i++)
 		{
-			CtEscapeCsv(fmtbuf, MAX_SIZE, ctr->Strings[i]);
-			UniStrCat(buf, MAX_SIZE, fmtbuf);
+			CtEscapeCsv(fmtbuf, sizeof(fmtbuf), ctr->Strings[i]);
+			UniStrCat(buf, sizeof(buf), fmtbuf);
 			if(i != num_columns-1)
-				UniStrCat(buf, MAX_SIZE, L",");
+				UniStrCat(buf, sizeof(buf), L",");
 		}
 		c->Write(c, buf);
 	}

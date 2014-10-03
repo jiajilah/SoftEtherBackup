@@ -54,10 +54,25 @@
 // AND FORUM NON CONVENIENS. PROCESS MAY BE SERVED ON EITHER PARTY IN
 // THE MANNER AUTHORIZED BY APPLICABLE LAW OR COURT RULE.
 // 
-// USE ONLY IN JAPAN. DO NOT USE IT IN OTHER COUNTRIES. IMPORTING THIS
-// SOFTWARE INTO OTHER COUNTRIES IS AT YOUR OWN RISK. SOME COUNTRIES
-// PROHIBIT ENCRYPTED COMMUNICATIONS. USING THIS SOFTWARE IN OTHER
-// COUNTRIES MIGHT BE RESTRICTED.
+// USE ONLY IN JAPAN. DO NOT USE THIS SOFTWARE IN ANOTHER COUNTRY UNLESS
+// YOU HAVE A CONFIRMATION THAT THIS SOFTWARE DOES NOT VIOLATE ANY
+// CRIMINAL LAWS OR CIVIL RIGHTS IN THAT PARTICULAR COUNTRY. USING THIS
+// SOFTWARE IN OTHER COUNTRIES IS COMPLETELY AT YOUR OWN RISK. THE
+// SOFTETHER VPN PROJECT HAS DEVELOPED AND DISTRIBUTED THIS SOFTWARE TO
+// COMPLY ONLY WITH THE JAPANESE LAWS AND EXISTING CIVIL RIGHTS INCLUDING
+// PATENTS WHICH ARE SUBJECTS APPLY IN JAPAN. OTHER COUNTRIES' LAWS OR
+// CIVIL RIGHTS ARE NONE OF OUR CONCERNS NOR RESPONSIBILITIES. WE HAVE
+// NEVER INVESTIGATED ANY CRIMINAL REGULATIONS, CIVIL LAWS OR
+// INTELLECTUAL PROPERTY RIGHTS INCLUDING PATENTS IN ANY OF OTHER 200+
+// COUNTRIES AND TERRITORIES. BY NATURE, THERE ARE 200+ REGIONS IN THE
+// WORLD, WITH DIFFERENT LAWS. IT IS IMPOSSIBLE TO VERIFY EVERY
+// COUNTRIES' LAWS, REGULATIONS AND CIVIL RIGHTS TO MAKE THE SOFTWARE
+// COMPLY WITH ALL COUNTRIES' LAWS BY THE PROJECT. EVEN IF YOU WILL BE
+// SUED BY A PRIVATE ENTITY OR BE DAMAGED BY A PUBLIC SERVANT IN YOUR
+// COUNTRY, THE DEVELOPERS OF THIS SOFTWARE WILL NEVER BE LIABLE TO
+// RECOVER OR COMPENSATE SUCH DAMAGES, CRIMINAL OR CIVIL
+// RESPONSIBILITIES. NOTE THAT THIS LINE IS NOT LICENSE RESTRICTION BUT
+// JUST A STATEMENT FOR WARNING AND DISCLAIMER.
 // 
 // 
 // SOURCE CODE CONTRIBUTION
@@ -1790,6 +1805,77 @@ X *NewRootX(K *pub, K *priv, NAME *name, UINT days, X_SERIAL *serial)
 	return x2;
 }
 
+// Create new X509 basic & extended key usage
+void AddKeyUsageX509(EXTENDED_KEY_USAGE *ex, int nid)
+{
+	ASN1_OBJECT *obj;
+	// Validate arguments
+	if (ex == NULL)
+	{
+		return;
+	}
+
+	obj = OBJ_nid2obj(nid);
+	if (obj != NULL)
+	{
+		sk_ASN1_OBJECT_push(ex, obj);
+	}
+}
+X509_EXTENSION *NewExtendedKeyUsageForX509()
+{
+	EXTENDED_KEY_USAGE *ex = sk_ASN1_OBJECT_new_null();
+	X509_EXTENSION *ret;
+
+	AddKeyUsageX509(ex, NID_server_auth);
+	AddKeyUsageX509(ex, NID_client_auth);
+	AddKeyUsageX509(ex, NID_code_sign);
+	AddKeyUsageX509(ex, NID_email_protect);
+	AddKeyUsageX509(ex, NID_ipsecEndSystem);
+	AddKeyUsageX509(ex, NID_ipsecTunnel);
+	AddKeyUsageX509(ex, NID_ipsecUser);
+	AddKeyUsageX509(ex, NID_time_stamp);
+	AddKeyUsageX509(ex, NID_OCSP_sign);
+
+	ret = X509V3_EXT_i2d(NID_ext_key_usage, 0, ex);
+
+	sk_ASN1_OBJECT_pop_free(ex, ASN1_OBJECT_free);
+
+	return ret;
+}
+void BitStringSetBit(ASN1_BIT_STRING *str, int bit)
+{
+	// Validate arguments
+	if (str == NULL)
+	{
+		return;
+	}
+
+	ASN1_BIT_STRING_set_bit(str, bit, 1);
+}
+X509_EXTENSION *NewBasicKeyUsageForX509()
+{
+	X509_EXTENSION *ret = NULL;
+	ASN1_BIT_STRING *str;
+
+	str = ASN1_BIT_STRING_new();
+	if (str != NULL)
+	{
+		BitStringSetBit(str, 0);	// KU_DIGITAL_SIGNATURE
+		BitStringSetBit(str, 1);	// KU_NON_REPUDIATION
+		BitStringSetBit(str, 2);	// KU_KEY_ENCIPHERMENT
+		BitStringSetBit(str, 3);	// KU_DATA_ENCIPHERMENT
+		//BitStringSetBit(str, 4);	// KU_KEY_AGREEMENT
+		BitStringSetBit(str, 5);	// KU_KEY_CERT_SIGN
+		BitStringSetBit(str, 6);	// KU_CRL_SIGN
+
+		ret = X509V3_EXT_i2d(NID_key_usage, 0, str);
+
+		ASN1_BIT_STRING_free(str);
+	}
+
+	return ret;
+}
+
 // Issue an X509 certificate
 X509 *NewX509(K *pub, K *priv, X *ca, NAME *name, UINT days, X_SERIAL *serial)
 {
@@ -1797,6 +1883,9 @@ X509 *NewX509(K *pub, K *priv, X *ca, NAME *name, UINT days, X_SERIAL *serial)
 	UINT64 notBefore, notAfter;
 	ASN1_TIME *t1, *t2;
 	X509_NAME *subject_name, *issuer_name;
+	X509_EXTENSION *ex = NULL;
+	X509_EXTENSION *eku = NULL;
+	X509_EXTENSION *busage = NULL;
 	// Validate arguments
 	if (pub == NULL || name == NULL || ca == NULL)
 	{
@@ -1877,6 +1966,29 @@ X509 *NewX509(K *pub, K *priv, X *ca, NAME *name, UINT days, X_SERIAL *serial)
 		s->length = serial->size;
 	}
 
+	/*
+	// Extensions
+	ex = X509V3_EXT_conf_nid(NULL, NULL, NID_basic_constraints,	"critical,CA:TRUE");
+	X509_add_ext(x509, ex, -1);
+	X509_EXTENSION_free(ex);
+*/
+
+	// Basic usage
+	busage = NewBasicKeyUsageForX509();
+	if (busage != NULL)
+	{
+		X509_add_ext(x509, busage, -1);
+		X509_EXTENSION_free(busage);
+	}
+
+	// EKU
+	eku = NewExtendedKeyUsageForX509();
+	if (eku != NULL)
+	{
+		X509_add_ext(x509, eku, -1);
+		X509_EXTENSION_free(eku);
+	}
+
 	Lock(openssl_lock);
 	{
 		// Set the public key
@@ -1899,6 +2011,8 @@ X509 *NewRootX509(K *pub, K *priv, NAME *name, UINT days, X_SERIAL *serial)
 	ASN1_TIME *t1, *t2;
 	X509_NAME *subject_name, *issuer_name;
 	X509_EXTENSION *ex = NULL;
+	X509_EXTENSION *eku = NULL;
+	X509_EXTENSION *busage = NULL;
 	// Validate arguments
 	if (pub == NULL || name == NULL || priv == NULL)
 	{
@@ -1988,6 +2102,22 @@ X509 *NewRootX509(K *pub, K *priv, NAME *name, UINT days, X_SERIAL *serial)
 	ex = X509V3_EXT_conf_nid(NULL, NULL, NID_basic_constraints,	"critical,CA:TRUE");
 	X509_add_ext(x509, ex, -1);
 	X509_EXTENSION_free(ex);
+
+	// Basic usage
+	busage = NewBasicKeyUsageForX509();
+	if (busage != NULL)
+	{
+		X509_add_ext(x509, busage, -1);
+		X509_EXTENSION_free(busage);
+	}
+
+	// EKU
+	eku = NewExtendedKeyUsageForX509();
+	if (eku != NULL)
+	{
+		X509_add_ext(x509, eku, -1);
+		X509_EXTENSION_free(eku);
+	}
 
 	Lock(openssl_lock);
 	{
@@ -4090,7 +4220,7 @@ CRYPT *NewCrypt(void *key, UINT size)
 {
 	CRYPT *c = ZeroMalloc(sizeof(CRYPT));
 
-	c->Rc4Key = ZeroMalloc(sizeof(struct rc4_key_st));
+	c->Rc4Key = Malloc(sizeof(struct rc4_key_st));
 
 	RC4_set_key(c->Rc4Key, size, (UCHAR *)key);
 
