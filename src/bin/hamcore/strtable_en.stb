@@ -63,7 +63,7 @@ COMMON_UNKNOWN			(Unknown)
 # Protocol error strings
 ERR_UNKNOWN				An unknown error occurred.
 ERR_0					No error.
-ERR_1					Connection to the server failed. Check network connection and make sure that address and port number of destination sever are correct.
+ERR_1					Connection to the server failed. Check network connection and make sure that address and port number of destination server are correct.
 ERR_2					Protocol error occurred. Error was returned from the destination server.
 ERR_3					Connection has been disconnected.
 ERR_4					Protocol error occurred.
@@ -549,6 +549,8 @@ HUB_AO_MaxLoggedPacketsPerMinute			Maximum number of logging target packets per 
 HUB_AO_DoNotSaveHeavySecurityLogs			Do not take heavy security log.
 HUB_AO_DropBroadcastsInPrivacyFilterMode	Drop broadcasting packets if the both source and destination session is PrivacyFilter mode.
 HUB_AO_DropArpInPrivacyFilterMode			Drop ARP packets if the both source and destination session is PrivacyFilter mode.
+HUB_AO_SuppressClientUpdateNotification		Suppress the update notification screen on the VPN Client.
+HUB_AO_FloodingSendQueueBufferQuota			Specify the quota limitation value (in bytes) of the sending queue buffer size which the flooding operation on the Virtual Hub can consume. The quota value is applied on the total length of sending queues of all active VPN sessions. Specify '0' to disable the quota. This option is effective to solve the out-of-memory problem on the network where there are many flooding packets.
 
 
 # Concerning failed connection dialogs
@@ -1062,14 +1064,15 @@ SVC_HIDE_TRAY_MSG		This will hide the tasktray icons when starting %S in user mo
 
 # Concerning services (UNIX)
 UNIX_DAEMON_HELP		SoftEther VPN non-forking daemon for upstart and systemd.\nCommand Usage:\n %S vpnbridge  - Enable bridging features.\n %S vpnclient  - Enable client features.\n %S vpnserver  - Enable all features.\nThe parameter can be set in the SOFTETHER_MODE environment variable.\n\n
-UNIX_SVC_HELP			%S Service Program\nCopyright (c) SoftEther VPN Project. All Rights Reserved.\n\n%S Command Usage:\n %S start  - Start %S Service.\n %S stop   - Stop %S Service if the service is already started.\n\n
-UNIX_SVC_STARTED		%S Service Started.\n
-UNIX_SVC_STOPPING		Stopping %S Service...\n
-UNIX_SVC_STOPPED		%S Service Stopped.\n
-UNIX_SVC_STOP_FAILED	%S Service Stop Failed.\n
-UNIX_SVC_ALREADY_START	%S Service is already started.\nExecute "%S stop" to stop this service.\n
-UNIX_SVC_NOT_STARTED	%S Service is not yet started.\nExecute "%S start" to start this service.\n
-UNIX_SVC_ERROR_FORK		Failed to create child process for %S Service.\n
+UNIX_SVC_HELP			%S service program\nCopyright (c) SoftEther VPN Project. All Rights Reserved.\n\n%S command usage:\n %S start  - Start the %S service.\n %S stop   - Stop the %S service if the service has been already started.\n\n
+UNIX_SVC_STARTED		The %S service has been started.\n
+UNIX_SVC_STOPPING		Stopping the %S service ...\n
+UNIX_SVC_STOPPED		%S service has been stopped.\n
+UNIX_SVC_STOP_FAILED	Stopping %S service was failed.\n
+UNIX_SVC_ALREADY_START	%S service has been already started.\nRun the "%S stop" command to stop this service.\n
+UNIX_SVC_NOT_STARTED	%S service has not yet been started.\nRun the "%S start" to start this service.\n
+UNIX_SVC_ERROR_FORK		Failed to create child process for the %S service.\n
+UNIX_SVC_NONROOT		\nWarning: The current user context is non-root. It is recommended to run the VPN service by the root user. Although the VPN service may run under non-root users, some privilege-required functions (e.g. the local bridge function) need the root privilege.\n
 
 
 # Service definition (SoftEther VPN Client)
@@ -1277,8 +1280,8 @@ SM_CONNINFO_CAPTION		Connection %s Information
 SM_CONNINFO_NAME		Connection Name
 SM_CONNINFO_TYPE		Connection Type
 SM_CONNINFO_HOSTNAME	Source Host Name
-SM_CONNINFO_IP			Source IP Address
-SM_CONNINFO_PORT		Source Port Number (TCP)
+SM_CONNINFO_IP			Client IP Address
+SM_CONNINFO_PORT		Client Port Number (TCP)
 SM_CONNINFO_TIME		Connection Start
 SM_CONNINFO_SERVER_STR	Server Product Name
 SM_CONNINFO_SERVER_VER	Sever Version
@@ -1442,8 +1445,8 @@ SM_SESS_STATUS_CAPTION	VPN Session "%S" Status
 SM_SESS_STATUS_USERNAME	User Name (Authentication)
 SM_SESS_STATUS_REALUSER	User Name (Database)
 SM_SESS_STATUS_GROUPNAME	Group Name
-SM_CLIENT_IP			Source IP Address
-SM_CLIENT_HOSTNAME		Source Host Name
+SM_CLIENT_IP			Client IP Address
+SM_CLIENT_HOSTNAME		Client Host Name
 SM_NODE_CLIENT_NAME		Client Product Name
 SM_NODE_CLIENT_VER		Client Version
 SM_NODE_CLIENT_BUILD	Client Build
@@ -4294,7 +4297,7 @@ CMD_UNKNOWN_PARAM		There is no description for this parameter.
 
 # Strings being used within console system
 CMD_HELP_1				You can use the following %u commands: 
-CMD_HELP_2				To reference the usage for each command, input "command name /?" to view a help.
+CMD_HELP_2				To reference the usage for each command, input "command name ?" to view a help.
 CMD_EVAL_MIN_MAX		You must specify an integer in the range from %u to %u for the value. 
 CMD_PROMPT				Enter a value: 
 CMD_EVAL_NOT_EMPTY		You cannot make a blank specification.
@@ -6850,7 +6853,7 @@ CMD_TrafficClient_ERROR_HOSTPORT	The host name or port number is incorrectly spe
 
 # TrafficServer command
 CMD_TrafficServer		Run Network Traffic Speed Test Tool in Server Mode
-CMD_TrafficServer_Help	Use this to execute the communication throughput measurement tool's server program. \nTwo commands, TrafficClient and TrafficServer, are used for the communication throughput measurement tool to enable the measurement of communication throughput that can be transferred between two computers connected by IP network. \nTo set the TCP port of this computer to the Listen status to listen for the connection from the TrafficClient of another computer, specify the port number and start the server program using the TrafficServer command. \nYou can display more detailed information on the communication throughput measurement tool by inputting "TrafficClient /?". \n\nNote: This command can be called from the SoftEther VPN Command Line Management Utility. You can also execute this command while connected to the current VPN Server or VPN Client in Administration Mode but, what actually conducts communication and measures the throughput is the computer on which the command is running, and all this is executed in a context that has absolutely no relationship to the computer that is the destination of the Administration Mode connection.
+CMD_TrafficServer_Help	Use this to execute the communication throughput measurement tool's server program. \nTwo commands, TrafficClient and TrafficServer, are used for the communication throughput measurement tool to enable the measurement of communication throughput that can be transferred between two computers connected by IP network. \nTo set the TCP port of this computer to the Listen status to listen for the connection from the TrafficClient of another computer, specify the port number and start the server program using the TrafficServer command. \nYou can display more detailed information on the communication throughput measurement tool by inputting "TrafficClient ?". \n\nNote: This command can be called from the SoftEther VPN Command Line Management Utility. You can also execute this command while connected to the current VPN Server or VPN Client in Administration Mode but, what actually conducts communication and measures the throughput is the computer on which the command is running, and all this is executed in a context that has absolutely no relationship to the computer that is the destination of the Administration Mode connection.
 CMD_TrafficServer_Args	TrafficServer [port]
 CMD_TrafficServer_[port]	Specify, using an integer, the port number at which to listen for the connection. If the specified port has been already being used by another program, or if the port cannot be opened, an error will occur.
 
