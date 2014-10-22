@@ -1,3 +1,17 @@
+softether (4.11.9506-1~utopic) utopic; urgency=low
+
+  [ dnobori ]
+  * v4.11-9506-beta
+
+  As a response to the SSLv3 POODLE problem we added the "AcceptOnlyTls"
+  configuration flag on the vpn_server.config for SoftEther VPN Server.
+  Please set this flag is you want to completely disable the SSLv3 function
+  in SoftEther VPN Server. Added the perfect forward security (PFS) support
+  on SSL/TLS. SoftEther VPN Server can now accept connections with
+  DHE-RSA-AES128-SHA or DHE-RSA-AES256-SHA ciphers.
+
+ -- Darik Horn <dajhorn@vanadac.com>  Wed, 22 Oct 2014 18:31:53 -0400
+
 softether (4.10.9505-1~utopic) utopic; urgency=low
 
   [ dnobori ]
