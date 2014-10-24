@@ -1,7 +1,7 @@
 description "SoftEther VPN"
 
 start on started networking
-stop on stoppping networking
+stop on stopping networking
 
 respawn
 expect stop
