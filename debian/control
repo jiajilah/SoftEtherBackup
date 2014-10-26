@@ -9,6 +9,7 @@ Homepage: http://www.softether.org/
 Package: softether
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
+Recommends: upstart
 Section: net
 Description: Softether VPN
  SoftEther VPN ("SoftEther" means "Software Ethernet") is one of the world's
