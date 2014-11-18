@@ -1,3 +1,25 @@
+softether (4.12.9514-1~utopic) utopic; urgency=low
+
+  [ Darik Horn ]
+  * Fix typo in the /etc/init/softether.conf file.
+  * Ensure that apparmor is ready in upstart pre-start.
+
+  [ dnobori ]
+  * v4.12-9514-beta
+   + Added the VLAN ID dynamic assignment function by RADIUS.
+   + Added the OpenVPNDefaultClientOption option in the vpn_server.config.
+   + Improved the DHCP option parser to allow the external DHCP server pushes
+     the classless routing table which exceeds 255 bytes.
+   + Added the support for "hair-pin connection" on the NAT Traversal function.
+   + Fixed the performance problem when the server computer has the wrong
+     resolv.conf setting file on Linux.
+   + Fixed the VPN Client configuration backup folder name which the setup
+     wizard automatically creates.
+   + Fixed the UDP checksum value of the beacon packets which are sent by the
+     Virtual Layer 3 Switch function.
+
+ -- Darik Horn <dajhorn@vanadac.com>  Mon, 17 Nov 2014 23:57:02 -0500
+
 softether (4.11.9506-1~utopic) utopic; urgency=low
 
   [ dnobori ]
