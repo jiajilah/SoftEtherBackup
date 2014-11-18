@@ -1,10 +1,15 @@
 description "SoftEther VPN"
 
 start on started networking
-stop on stoppping networking
+stop on stopping networking
 
 respawn
 expect stop
+
+pre-start script
+	test -x /lib/init/apparmor-profile-load \
+	  && /lib/init/apparmor-profile-load usr.sbin.softetherd
+end script
 
 script
 	test -f /etc/default/softether && . /etc/default/softether
